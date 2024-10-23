@@ -3,6 +3,7 @@
     "name": "Museum",
     "slug": "Museum",
     "version": "1.0.0",
+    "scheme": "Museum",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
