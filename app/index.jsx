@@ -91,9 +91,6 @@ export default function App() {
                 style={styles.image}
                 resizeMode='contain'
             />
-              <Text style={styles.boxText}>
-                {row + 1}, {col + 1}
-              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -114,7 +111,7 @@ const styles = StyleSheet.create({
     },
     box: {
       margin: 2,
-      backgroundColor: '#00A9FF',
+      backgroundColor: '#009FF',
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 5,
