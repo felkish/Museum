@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import styles from './DetailsScreenStyles';
@@ -24,8 +25,8 @@ const DetailsScreen = ({ route }) => {
 
   useEffect(() => {
     const loadSound = async () => {
-      const { sound1 } = await Audio.Sound.createAsync(audioFiles[audioIndex]);
-      setSound(sound1);
+      const { sound } = await Audio.Sound.createAsync(audioFiles[audioIndex]);
+      setSound(sound);
 
       // Set the playback status update to monitor progress
       sound.setOnPlaybackStatusUpdate((status) => {
@@ -42,11 +43,20 @@ const DetailsScreen = ({ route }) => {
 
     // Cleanup function to unload sound when leaving screen
     return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
     };
   }, [audioIndex]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        if (sound) {
+          sound.stopAsync().then(() => {
+            sound.unloadAsync();
+          });
+        }
+      };
+    }, [sound])
+  );
 
   const togglePlayPause = async () => {
     if (isPlaying) {
