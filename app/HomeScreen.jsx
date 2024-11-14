@@ -6,21 +6,43 @@ import { Audio } from 'expo-av';
 import styles from './HomeScreenStyles';
 
 const audioFiles = [
-  require('../assets/Sounds/Jcole Type Beat.mp3'),
-  require('../assets/Sounds/Port Antonio.mp3'),
-  require('../assets/Sounds/She Knows.mp3'),
-  require('../assets/Sounds/Tee Grizzley.mp3'),
-  require('../assets/Sounds/Truly Yours.mp3'),
-  require('../assets/Sounds/Work Out.mp3'),
+  require('../assets/Sounds/1.mp3'),
+  require('../assets/Sounds/2.mp3'),
+  require('../assets/Sounds/3.mp3'),
+  require('../assets/Sounds/4.mp3'),
+  require('../assets/Sounds/5.mp3'),
+  
+  require('../assets/Sounds/6.mp3'),
+  require('../assets/Sounds/7.mp3'),
+  require('../assets/Sounds/8.mp3'),
+  require('../assets/Sounds/9.mp3'),
+  require('../assets/Sounds/10.mp3'),
+ 
+  require('../assets/Sounds/11.mp3'),
+  require('../assets/Sounds/12.mp3'),
+  require('../assets/Sounds/13.mp3'),
+  require('../assets/Sounds/14.mp3'),
+  require('../assets/Sounds/15.mp3')
 ];
 
 const imageFiles = [
-  require('../assets/Images/JcoleTypeBeat.jpg'),
-  require('../assets/Images/Port Antonio.jpg'),
-  require('../assets/Images/She knows.jpg'),
-  require('../assets/Images/Tee Grizzley.jpg'),
-  require('../assets/Images/Truly Yours.jpg'),
-  require('../assets/Images/Work Out.jpeg'),
+  require('../assets/Images/Default.jpg'),
+  require('../assets/Images/2. Rothboa.jpg'),
+  require('../assets/Images/Default.jpg'),
+  require('../assets/Images/Default.jpg'),
+  require('../assets/Images/Default.jpg'),
+
+  require('../assets/Images/Default.jpg'),
+  require('../assets/Images/Default.jpg'),
+  require('../assets/Images/8. Stora kyrkan.jpg'),
+  require('../assets/Images/9. Gamla kyrkan.jpg'),
+  require('../assets/Images/Default.jpg'),
+
+  require('../assets/Images/11. Solkanonen.jpg'),
+  require('../assets/Images/12. Templet.jpg'),
+  require('../assets/Images/13. Adelsnäs.jpg'),
+  require('../assets/Images/Default.jpg'),
+  require('../assets/Images/15. Stallet.jpg'),
 ];
 
 function HomeScreen({ navigation }) {
@@ -63,7 +85,7 @@ function HomeScreen({ navigation }) {
                 navigation.navigate('Details', {
                   image,
                   audioIndex: index,
-                  title: `Track ${index + 1}`,
+                  title: `Hållplats ${index + 1}`,
                 })
               }
             >
