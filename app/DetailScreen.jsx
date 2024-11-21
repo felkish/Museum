@@ -31,6 +31,7 @@ const DetailsScreen = ({ route }) => {
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
+  const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
     const loadSound = async () => {
@@ -48,6 +49,7 @@ const DetailsScreen = ({ route }) => {
             setPosition(0); // Reset position to 0
             setSliderValue(0); // Reset slider to 0
             setIsPlaying(false); // Pause the audio automatically when it finishes
+            setIsFinished(true);
           }
         }
       });
@@ -84,10 +86,13 @@ const DetailsScreen = ({ route }) => {
       await sound.pauseAsync();
       setIsPlaying(false);
     } else {
-      await sound.setPositionAsync(0); // Reset to the beginning
-      await sound.playAsync(); // Play from the beginning
-      setIsPlaying(true);
-      setSliderValue(0); // Reset slider to 0 when restarting
+      if(isFinished) {
+        await sound.setPositionAsync(0);
+        setSliderValue(0); // Reset slider to 0 when restarting
+        setIsFinished(false);
+      }
+      await sound.playAsync();
+      setIsPlaying(true); 
     }
   };
 
@@ -95,7 +100,7 @@ const DetailsScreen = ({ route }) => {
     if (sound) {
       const seekPosition = value * duration;
       await sound.setPositionAsync(seekPosition); // Seek to the specified position without pausing
-      setIsPlaying(true);
+
 
       // Ensure the song keeps playing after seeking if it was previously playing
       if (!isPlaying) {
@@ -125,25 +130,25 @@ const DetailsScreen = ({ route }) => {
   }, [sound, isPlaying, duration]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <Image source={image} style={styles.image} resizeMode="contain" />
+      <View style={styles.container}>
+        <Text style={styles.title}>{title}</Text>
+        <Image source={image} style={styles.image} resizeMode="contain" />
 
-      <Slider
-        style={styles.slider}
-        minimumValue={0}
-        maximumValue={1}
-        value={sliderValue} // Use sliderValue for the slider's value
-        onSlidingComplete={onSliderValueChange}
-        minimumTrackTintColor="#0d6efd"
-        maximumTrackTintColor="#ddd"
-        thumbTintColor="#0d6efd" // Set thumb color to match track color
-      />
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={1}
+          value={sliderValue} // Use sliderValue for the slider's value
+          onSlidingComplete={onSliderValueChange}
+          minimumTrackTintColor="#0d6efd"
+          maximumTrackTintColor="#ddd"
+          thumbTintColor="#0d6efd" // Set thumb color to match track color
+        />
 
-      <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
-        <FontAwesome name={isPlaying ? 'pause' : 'play'} size={24} color="#fff" />
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
+          <FontAwesome name={isPlaying ? 'pause' : 'play'} size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
   );
 };
 

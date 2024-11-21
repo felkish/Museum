@@ -3,7 +3,7 @@
     "name": "Museum",
     "slug": "Museum",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "scheme": "yourapp",
@@ -15,13 +15,6 @@
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.mikrish99.Museum"
-    },
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -30,8 +23,11 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "32941974-7624-4e54-b389-44365c66541e"
+        "projectId": "2ba8a342-dfc3-4323-9660-0ab2ab09eeb5"
       }
+    },
+    "android": {
+      "package": "com.felkish.Museum"
     }
   }
 }

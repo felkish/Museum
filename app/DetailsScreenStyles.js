@@ -14,12 +14,12 @@ export default StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 300,
+    height: '70%',
     marginBottom: 20,
   },
   slider: {
     width: '90%',
-    height: 40,
+    height: '10%',
     marginVertical: 20,
   },
   playPauseButton: {
@@ -27,7 +27,7 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#0d6efd',
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 40,
     alignItems: 'center',
   },
   description: {
