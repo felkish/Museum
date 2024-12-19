@@ -21,7 +21,8 @@ const audioFiles = [
   require('../assets/Sounds/12.mp3'),
   require('../assets/Sounds/13.mp3'),
   require('../assets/Sounds/14.mp3'),
-  require('../assets/Sounds/15.mp3')
+  require('../assets/Sounds/15.mp3'),
+  //Add new sound here
 ];
 
 const DetailsScreen = ({ route }) => {
