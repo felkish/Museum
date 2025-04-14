@@ -1,0 +1,474 @@
+[1mdiff --git a/app/DetailScreen.jsx b/app/DetailScreen.jsx[m
+[1mindex 681f695..48f9298 100644[m
+[1m--- a/app/DetailScreen.jsx[m
+[1m+++ b/app/DetailScreen.jsx[m
+[36m@@ -6,29 +6,12 @@[m [mimport Slider from '@react-native-community/slider';[m
+ import FontAwesome from 'react-native-vector-icons/FontAwesome';[m
+ import styles from './DetailsScreenStyles';[m
+ [m
+[31m-const audioFiles = [[m
+[31m-  require('../assets/Sounds/1.mp3'),[m
+[31m-  require('../assets/Sounds/2.mp3'),[m
+[31m-  require('../assets/Sounds/3.mp3'),[m
+[31m-  require('../assets/Sounds/4.mp3'),[m
+[31m-  require('../assets/Sounds/5.mp3'),[m
+[31m-  require('../assets/Sounds/6.mp3'),[m
+[31m-  require('../assets/Sounds/7.mp3'),[m
+[31m-  require('../assets/Sounds/8.mp3'),[m
+[31m-  require('../assets/Sounds/9.mp3'),[m
+[31m-  require('../assets/Sounds/10.mp3'),[m
+[31m-  require('../assets/Sounds/11.mp3'),[m
+[31m-  require('../assets/Sounds/12.mp3'),[m
+[31m-  require('../assets/Sounds/13.mp3'),[m
+[31m-  require('../assets/Sounds/14.mp3'),[m
+[31m-  require('../assets/Sounds/15.mp3'),[m
+[31m-  //Add new sound here[m
+[31m-];[m
+[32m+[m[32mconst logo = require('../assets/Images/KnowitBlack.png'); // Import the logo[m
+ [m
+ const DetailsScreen = ({ route }) => {[m
+   const { image, audioIndex, title } = route.params;[m
+   const [sound, setSound] = useState(null);[m
+[31m-  const [isPlaying, setIsPlaying] = useState(true); // Start playing automatically[m
+[32m+[m[32m  const [isPlaying, setIsPlaying] = useState(true);[m
+   const [position, setPosition] = useState(0);[m
+   const [duration, setDuration] = useState(0);[m
+   const [sliderValue, setSliderValue] = useState(0);[m
+[36m@@ -36,36 +19,29 @@[m [mconst DetailsScreen = ({ route }) => {[m
+ [m
+   useEffect(() => {[m
+     const loadSound = async () => {[m
+[31m-      const { sound } = await Audio.Sound.createAsync(audioFiles[audioIndex]);[m
+[32m+[m[32m      const { sound } = await Audio.Sound.createAsync([m
+[32m+[m[32m        require(`../assets/Sounds/${audioIndex + 1}.mp3`)[m
+[32m+[m[32m      );[m
+       setSound(sound);[m
+[31m-[m
+[31m-      // Set the playback status update to monitor progress[m
+       sound.setOnPlaybackStatusUpdate((status) => {[m
+         if (status.isLoaded) {[m
+           setPosition(status.positionMillis);[m
+           setDuration(status.durationMillis);[m
+[31m-[m
+[31m-          // When the audio finishes playing, reset the position, slider, and pause the audio[m
+           if (status.positionMillis === status.durationMillis) {[m
+[31m-            setPosition(0); // Reset position to 0[m
+[31m-            setSliderValue(0); // Reset slider to 0[m
+[31m-            setIsPlaying(false); // Pause the audio automatically when it finishes[m
+[32m+[m[32m            setPosition(0);[m
+[32m+[m[32m            setSliderValue(0);[m
+[32m+[m[32m            setIsPlaying(false);[m
+             setIsFinished(true);[m
+           }[m
+         }[m
+       });[m
+[31m-[m
+[31m-      await sound.playAsync(); // Automatically play the sound on load[m
+[32m+[m[32m      await sound.playAsync();[m
+     };[m
+ [m
+     loadSound();[m
+[31m-[m
+[31m-    // Cleanup function to unload sound when leaving screen[m
+     return () => {[m
+       if (sound) {[m
+[31m-        sound.stopAsync().then(() => {[m
+[31m-          sound.unloadAsync();[m
+[31m-        });[m
+[32m+[m[32m        sound.stopAsync().then(() => sound.unloadAsync());[m
+       }[m
+     };[m
+   }, [audioIndex]);[m
+[36m@@ -74,9 +50,7 @@[m [mconst DetailsScreen = ({ route }) => {[m
+     React.useCallback(() => {[m
+       return () => {[m
+         if (sound) {[m
+[31m-          sound.stopAsync().then(() => {[m
+[31m-            sound.unloadAsync();[m
+[31m-          });[m
+[32m+[m[32m          sound.stopAsync().then(() => sound.unloadAsync());[m
+         }[m
+       };[m
+     }, [sound])[m
+[36m@@ -87,70 +61,47 @@[m [mconst DetailsScreen = ({ route }) => {[m
+       await sound.pauseAsync();[m
+       setIsPlaying(false);[m
+     } else {[m
+[31m-      if(isFinished) {[m
+[32m+[m[32m      if (isFinished) {[m
+         await sound.setPositionAsync(0);[m
+[31m-        setSliderValue(0); // Reset slider to 0 when restarting[m
+[32m+[m[32m        setSliderValue(0);[m
+         setIsFinished(false);[m
+       }[m
+       await sound.playAsync();[m
+[31m-      setIsPlaying(true); [m
+[31m-    }[m
+[31m-  };[m
+[31m-[m
+[31m-  const onSliderValueChange = async (value) => {[m
+[31m-    if (sound) {[m
+[31m-      const seekPosition = value * duration;[m
+[31m-      await sound.setPositionAsync(seekPosition); // Seek to the specified position without pausing[m
+[31m-[m
+[31m-[m
+[31m-      // Ensure the song keeps playing after seeking if it was previously playing[m
+[31m-      if (!isPlaying) {[m
+[31m-        await sound.playAsync(); // Continue playing after seeking if it was paused[m
+[31m-        setIsPlaying(true); // Update the play state to "playing" after seeking[m
+[31m-      }[m
+[32m+[m[32m      setIsPlaying(true);[m
+     }[m
+   };[m
+ [m
+[31m-  // Update slider position continuously while sound is playing[m
+[31m-  useEffect(() => {[m
+[31m-    let interval;[m
+[31m-    if (sound && isPlaying) {[m
+[31m-      interval = setInterval(() => {[m
+[31m-        sound.getStatusAsync().then((status) => {[m
+[31m-          if (status.isLoaded) {[m
+[31m-            setPosition(status.positionMillis);[m
+[31m-            setSliderValue(status.positionMillis / duration || 0); // Update slider as well[m
+[31m-          }[m
+[31m-        });[m
+[31m-      }, 100); // Update every 100ms[m
+[31m-    }[m
+[31m-[m
+[31m-    return () => {[m
+[31m-      if (interval) clearInterval(interval);[m
+[31m-    };[m
+[31m-  }, [sound, isPlaying, duration]);[m
+[31m-[m
+   return ([m
+[31m-      <View style={styles.container}>[m
+[31m-        <Text style={styles.title}>{title}</Text>[m
+[31m-        <Image source={image} style={styles.image} resizeMode="contain" />[m
+[31m-[m
+[31m-        <Slider[m
+[31m-          style={styles.slider}[m
+[31m-          minimumValue={0}[m
+[31m-          maximumValue={1}[m
+[31m-          value={sliderValue} // Use sliderValue for the slider's value[m
+[31m-          onSlidingComplete={onSliderValueChange}[m
+[31m-          minimumTrackTintColor="#0d6efd"[m
+[31m-          maximumTrackTintColor="#ddd"[m
+[31m-          thumbTintColor="#0d6efd" // Set thumb color to match track color[m
+[31m-        />[m
+[31m-[m
+[31m-        <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>[m
+[31m-          <FontAwesome name={isPlaying ? 'pause' : 'play'} size={24} color="#fff" />[m
+[31m-        </TouchableOpacity>[m
+[31m-      </View>[m
+[32m+[m[32m    <View style={styles.container}>[m
+[32m+[m[32m      {/* Logo added here */}[m
+[32m+[m[32m      <Image source={logo} style={styles.logo} resizeMode="contain" />[m
+[32m+[m
+[32m+[m[32m      <Text style={styles.title}>{title}</Text>[m
+[32m+[m[32m      <Image source={image} style={styles.image} resizeMode="contain" />[m
+[32m+[m
+[32m+[m[32m      <Slider[m
+[32m+[m[32m        style={styles.slider}[m
+[32m+[m[32m        minimumValue={0}[m
+[32m+[m[32m        maximumValue={1}[m
+[32m+[m[32m        value={sliderValue}[m
+[32m+[m[32m        onSlidingComplete={(value) => {[m
+[32m+[m[32m          const seekPosition = value * duration;[m
+[32m+[m[32m          sound.setPositionAsync(seekPosition);[m
+[32m+[m[32m          if (!isPlaying) {[m
+[32m+[m[32m            sound.playAsync();[m
+[32m+[m[32m            setIsPlaying(true);[m
+[32m+[m[32m          }[m
+[32m+[m[32m        }}[m
+[32m+[m[32m        minimumTrackTintColor="#0d6efd"[m
+[32m+[m[32m        maximumTrackTintColor="#ddd"[m
+[32m+[m[32m        thumbTintColor="#0d6efd"[m
+[32m+[m[32m      />[m
+[32m+[m
+[32m+[m[32m      <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>[m
+[32m+[m[32m        <FontAwesome name={isPlaying ? 'pause' : 'play'} size={24} color="#fff" />[m
+[32m+[m[32m      </TouchableOpacity>[m
+[32m+[m[32m    </View>[m
+   );[m
+ };[m
+ [m
+[31m-export default DetailsScreen;[m
+[32m+[m[32mexport default DetailsScreen;[m
+\ No newline at end of file[m
+[1mdiff --git a/app/DetailsScreenStyles.js b/app/DetailsScreenStyles.js[m
+[1mindex 4fd0263..70345e6 100644[m
+[1m--- a/app/DetailsScreenStyles.js[m
+[1m+++ b/app/DetailsScreenStyles.js[m
+[36m@@ -7,6 +7,11 @@[m [mexport default StyleSheet.create({[m
+     alignItems: 'center',[m
+     padding: 20,[m
+   },[m
+[32m+[m[32m  logo: {[m
+[32m+[m[32m    width: 150,[m
+[32m+[m[32m    height: 50,[m
+[32m+[m[32m    marginBottom: 20,[m
+[32m+[m[32m  },[m
+   title: {[m
+     fontSize: 24,[m
+     fontWeight: 'bold',[m
+[36m@@ -14,25 +19,28 @@[m [mexport default StyleSheet.create({[m
+   },[m
+   image: {[m
+     width: '100%',[m
+[31m-    height: '70%',[m
+[32m+[m[32m    height: '50%',[m
+[32m+[m[32m    maxHeight: 300,[m
+     marginBottom: 20,[m
+   },[m
+   slider: {[m
+     width: '90%',[m
+[31m-    height: '10%',[m
+[32m+[m[32m    height: 40,[m
+     marginVertical: 20,[m
+   },[m
+   playPauseButton: {[m
+[31m-    paddingVertical: 10,[m
+[31m-    paddingHorizontal: 20,[m
+[32m+[m[32m    width: 60,[m
+[32m+[m[32m    height: 60,[m
+     backgroundColor: '#0d6efd',[m
+[31m-    borderRadius: 5,[m
+[31m-    marginBottom: 40,[m
+[32m+[m[32m    borderRadius: 30,[m
+[32m+[m[32m    justifyContent: 'center',[m
+     alignItems: 'center',[m
+[32m+[m[32m    marginBottom: 40,[m
+   },[m
+   description: {[m
+     fontSize: 16,[m
+     textAlign: 'center',[m
+     color: '#333',[m
+[31m-  },[m
+[32m+[m[32m    marginTop: 10,[m
+[32m+[m[32m  }[m[41m  [m
+ });[m
+\ No newline at end of file[m
+[1mdiff --git a/app/HomeScreen.jsx b/app/HomeScreen.jsx[m
+[1mindex 1ce507e..c228e9e 100644[m
+[1m--- a/app/HomeScreen.jsx[m
+[1m+++ b/app/HomeScreen.jsx[m
+[36m@@ -2,9 +2,10 @@[m
+ import React, { useState, useEffect } from 'react';[m
+ import { SafeAreaView } from 'react-native-safe-area-context';[m
+ import { View, Text, TouchableOpacity, Image, ActivityIndicator, ScrollView, Dimensions } from 'react-native';[m
+[31m-import { Audio } from 'expo-av';[m
+ import styles from './HomeScreenStyles';[m
+ [m
+[32m+[m[32mconst logo = require('../assets/Images/KnowitBlack.png');[m
+[32m+[m
+ const imageFiles = [[m
+   require('../assets/Images/Default.jpg'),[m
+   require('../assets/Images/2. Rothboa.jpg'),[m
+[36m@@ -30,11 +31,13 @@[m [mfunction HomeScreen({ navigation }) {[m
+   const { width, height } = Dimensions.get('window');[m
+   const boxSize = Math.min(width, height) / 6;[m
+ [m
+[31m-  const [sounds, setSounds] = useState([]);[m
+[31m-[m
+   return ([m
+     <SafeAreaView style={styles.container}>[m
+       <ScrollView contentContainerStyle={styles.scrollContainer}>[m
+[32m+[m[32m        {/* Theview below is ecpected to be the header of this page, will it be like i expect ehen the app is rendered? */}[m
+[32m+[m[32m        <View style={styles.header}>[m
+[32m+[m[32m  <Image source={logo} style={styles.logo} resizeMode="contain" />[m
+[32m+[m[32m</View>[m
+         <View style={styles.grid}>[m
+           {imageFiles.map((image, index) => ([m
+             <TouchableOpacity[m
+[1mdiff --git a/app/HomeScreenStyles.js b/app/HomeScreenStyles.js[m
+[1mindex 5a3ded7..8977474 100644[m
+[1m--- a/app/HomeScreenStyles.js[m
+[1m+++ b/app/HomeScreenStyles.js[m
+[36m@@ -1,6 +1,15 @@[m
+ import { StyleSheet } from 'react-native';[m
+ [m
+ export default StyleSheet.create({[m
+[32m+[m[32m  header: {[m
+[32m+[m[32m    width: '100%',[m
+[32m+[m[32m    alignItems: 'center',[m
+[32m+[m[32m    marginBottom: 10,[m
+[32m+[m[32m  },[m
+[32m+[m[32m  logo: {[m
+[32m+[m[32m    width: 200, // Adjust size as needed[m
+[32m+[m[32m    height: 50,[m
+[32m+[m[32m  },[m[41m  [m
+   container: {[m
+     flex: 1,[m
+     justifyContent: 'center',[m
+[36m@@ -17,15 +26,15 @@[m [mexport default StyleSheet.create({[m
+     width: '100%',[m
+   },[m
+   box: {[m
+[31m-    width: 350,[m
+[31m-    height: 250,[m
+[32m+[m[32m    width: boxSize,[m
+[32m+[m[32m    height: boxSize,[m
+     margin: 5,[m
+     backgroundColor: '#00A9FF',[m
+     justifyContent: 'center',[m
+     alignItems: 'center',[m
+     borderRadius: 5,[m
+     position: 'relative',[m
+[31m-  },[m
+[32m+[m[32m  },[m[41m  [m
+   boxText: {[m
+     color: '#FFFFFF',[m
+     fontWeight: 'bold',[m
+[1mdiff --git a/app/index.jsx b/app/index.jsx[m
+[1mindex 6c705a5..b82278f 100644[m
+[1m--- a/app/index.jsx[m
+[1m+++ b/app/index.jsx[m
+[36m@@ -16,5 +16,4 @@[m [mexport default function App() {[m
+       </Stack.Navigator>[m
+     </NavigationContainer>[m
+   );[m
+[31m-}[m
+[31m-[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git "a/assets/Images/13. Adelsn\303\244s.jpg" "b/assets/Images/13. Adelsn\303\244s.jpg"[m
+[1mindex d8f0a40..df2693b 100644[m
+Binary files "a/assets/Images/13. Adelsn\303\244s.jpg" and "b/assets/Images/13. Adelsn\303\244s.jpg" differ
+[1mdiff --git a/assets/Images/15. Stallet.jpg b/assets/Images/15. Stallet.jpg[m
+[1mindex 31e3a8a..90854a2 100644[m
+Binary files a/assets/Images/15. Stallet.jpg and b/assets/Images/15. Stallet.jpg differ
+[1mdiff --git a/assets/Images/2. Rothboa.jpg b/assets/Images/2. Rothboa.jpg[m
+[1mindex 5560b1b..9fea888 100644[m
+Binary files a/assets/Images/2. Rothboa.jpg and b/assets/Images/2. Rothboa.jpg differ
+[1mdiff --git a/assets/Images/Default.jpg b/assets/Images/Default.jpg[m
+[1mindex 019568e..98b471d 100644[m
+Binary files a/assets/Images/Default.jpg and b/assets/Images/Default.jpg differ
+[1mdiff --git a/assets/Images/logo-small.png b/assets/Images/logo-small.png[m
+[1mdeleted file mode 100644[m
+[1mindex b93cf42..0000000[m
+Binary files a/assets/Images/logo-small.png and /dev/null differ
+[1mdiff --git a/assets/Images/logo.png b/assets/Images/logo.png[m
+[1mdeleted file mode 100644[m
+[1mindex a2474cf..0000000[m
+Binary files a/assets/Images/logo.png and /dev/null differ
+[1mdiff --git a/assets/Images/thumbnail.png b/assets/Images/thumbnail.png[m
+[1mdeleted file mode 100644[m
+[1mindex d1defdb..0000000[m
+Binary files a/assets/Images/thumbnail.png and /dev/null differ
+[1mdiff --git a/assets/Sounds/3secCountdown.mp3 b/assets/Sounds/3secCountdown.mp3[m
+[1mdeleted file mode 100644[m
+[1mindex 14efedc..0000000[m
+Binary files a/assets/Sounds/3secCountdown.mp3 and /dev/null differ
+[1mdiff --git a/assets/Sounds/ZenSpiritual.mp3 b/assets/Sounds/ZenSpiritual.mp3[m
+[1mdeleted file mode 100644[m
+[1mindex e5f456a..0000000[m
+Binary files a/assets/Sounds/ZenSpiritual.mp3 and /dev/null differ
+[1mdiff --git a/assets/adaptive-icon.png b/assets/adaptive-icon.png[m
+[1mdeleted file mode 100644[m
+[1mindex 03d6f6b..0000000[m
+Binary files a/assets/adaptive-icon.png and /dev/null differ
+[1mdiff --git a/assets/favicon.png b/assets/favicon.png[m
+[1mdeleted file mode 100644[m
+[1mindex e75f697..0000000[m
+Binary files a/assets/favicon.png and /dev/null differ
+[1mdiff --git a/assets/icon.png b/assets/icon.png[m
+[1mdeleted file mode 100644[m
+[1mindex a0b1526..0000000[m
+Binary files a/assets/icon.png and /dev/null differ
+[1mdiff --git a/assets/splash.png b/assets/splash.png[m
+[1mdeleted file mode 100644[m
+[1mindex 0e89705..0000000[m
+Binary files a/assets/splash.png and /dev/null differ
+[1mdiff --git a/package-lock.json b/package-lock.json[m
+[1mindex 92d7d91..d683e09 100644[m
+[1m--- a/package-lock.json[m
+[1m+++ b/package-lock.json[m
+[36m@@ -17,15 +17,15 @@[m
+         "expo-cli": "^6.3.10",[m
+         "expo-constants": "~17.0.3",[m
+         "expo-linking": "~7.0.3",[m
+[31m-        "expo-router": "~4.0.9",[m
+[32m+[m[32m        "expo-router": "^4.0.17",[m
+         "expo-status-bar": "~2.0.0",[m
+         "react": "18.3.1",[m
+[31m-        "react-native": "0.76.3",[m
+[32m+[m[32m        "react-native": "^0.76.7",[m
+         "react-native-gesture-handler": "~2.20.2",[m
+         "react-native-progress": "^5.0.1",[m
+         "react-native-reanimated": "~3.16.1",[m
+         "react-native-safe-area-context": "4.12.0",[m
+[31m-        "react-native-screens": "~4.1.0"[m
+[32m+[m[32m        "react-native-screens": "^4.4.0"[m
+       },[m
+       "devDependencies": {[m
+         "@babel/core": "^7.20.0",[m
+[36m@@ -33,10 +33,9 @@[m
+       }[m
+     },[m
+     "node_modules/@0no-co/graphql.web": {[m
+[31m-      "version": "1.0.11",[m
+[31m-      "resolved": "https://registry.npmjs.org/@0no-co/graphql.web/-/graphql.web-1.0.11.tgz",[m
+[31m-      "integrity": "sha512-xuSJ9WXwTmtngWkbdEoopMo6F8NLtjy84UNAMsAr5C3/2SgAL/dEU10TMqTIsipqPQ8HA/7WzeqQ9DEQxSvPPA==",[m
+[31m-      "license": "MIT",[m
+[32m+[m[32m      "version": "1.1.1",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@0no-co/graphql.web/-/graphql.web-1.1.1.tgz",[m
+[32m+[m[32m      "integrity": "sha512-F2i3xdycesw78QCOBHmpTn7eaD2iNXGwB2gkfwxcOfBbeauYpr8RBSyJOkDrFtKtVRMclg8Sg3n1ip0ACyUuag==",[m
+       "peerDependencies": {[m
+         "graphql": "^14.0.0 || ^15.0.0 || ^16.0.0"[m
+       },[m
+[36m@@ -50,7 +49,6 @@[m
+       "version": "2.3.0",[m
+       "resolved": "https://registry.npmjs.org/@ampproject/remapping/-/remapping-2.3.0.tgz",[m
+       "integrity": "sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==",[m
+[31m-      "license": "Apache-2.0",[m
+       "dependencies": {[m
+         "@jridgewell/gen-mapping": "^0.3.5",[m
+         "@jridgewell/trace-mapping": "^0.3.24"[m
+[36m@@ -63,7 +61,6 @@[m
+       "version": "7.26.2",[m
+       "resolved": "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.26.2.tgz",[m
+       "integrity": "sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==",[m
+[31m-      "license": "MIT",[m
+       "dependencies": {[m
+         "@babel/helper-validator-identifier": "^7.25.9",[m
+         "js-tokens": "^4.0.0",[m
+[36m@@ -74,30 +71,28 @@[m
+       }[m
+     },[m
+     "node_modules/@babel/compat-data": {[m
+[31m-      "version": "7.25.8",[m
+[31m-      "resolved": "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.25.8.tgz",[m
+[31m-      "integrity": "sha512-ZsysZyXY4Tlx+Q53XdnOFmqwfB9QDTHYxaZYajWRoBLuLEAwI2UIbtxOjWh/cFaa9IKUlcB+DDuoskLuKu56JA==",[m
+[31m-      "license": "MIT",[m
+[32m+[m[32m      "version": "7.26.8",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.26.8.tgz",[m
+[32m+[m[32m      "integrity": "sha512-oH5UPLMWR3L2wEFLnFJ1TZXqHufiTKAiLfqw5zkhS4dKXLJ10yVztfil/twG8EDTA4F/tvVNw9nOl4ZMslB8rQ==",[m
+       "engines": {[m
+         "node": ">=6.9.0"[m
+       }[m
+     },[m
+     "node_modules/@babel/core": {[m
+[31m-      "version": "7.25.8",[m
+[31m-      "resolved": "https://registry.npmjs.org/@babel/core/-/core-7.25.8.tgz",[m
+[31m-      "integrity": "sha512-Oixnb+DzmRT30qu9d3tJSQkxuygWm32DFykT4bRoORPa9hZ/L4KhVB/XiRm6KG+roIEM7DBQlmg27kw2HZkdZg==",[m
+[31m-      "license": "MIT",[m
+[32m+[m[32m      "version": "7.26.9",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@babel/core/-/core-7.26.9.tgz",[m
+[32m+[m[32m      "integrity": "sha512-lWBYIrF7qK5+GjY5Uy+/hEgp8OJWOD/rpy74GplYRhEauvbHDeFB8t5hPOZxCZ0Oxf4Cc36tK51/l3ymJysrKw==",[m
+       "dependencies": {[m
+         "@ampproject/remapping": "^2.2.0",[m
+[31m-        "@babel/code-frame": "^7.25.7",[m
+[31m-        "@babel/generator": "^7.25.7",[m
+[31m-        "@babel/helper-compilation-targets": "^7.25.7",[m
+[31m-        "@babel/helper-module-transforms": "^7.25.7",[m
+[31m-        "@babel/helpers": "^7.25.7",[m
+[31m-        "@babel/parser": "^7.25.8",[m
+[31m-        "@babel/template": "^7.25.7",[m
+[31m-        "@babel/traverse": "^7.25.7",[m
+[31m-        "@babel/types": "^7.25.8",[m
+[32m+[m[32m        "@babel/code-frame": "^7.26.2",[m
+[32m+[m[32m        "@babel/generator": "^7.26.9",[m
+[32m+[m[32m        "@babel/helper-compilation-targets": "^7.26.5",[m
+[32m+[m[32m        "@babel/helper-module-transforms": "^7.26.0",[m
+[32m+[m[32m        "@babel/helpers": "^7.26.9",[m
+[32m+[m[3

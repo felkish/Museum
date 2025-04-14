@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "scheme": "Museum",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Images/KnowitBlack.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
