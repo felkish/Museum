@@ -1,58 +1,60 @@
-// HomeScreenStyles.js
+// app/HomeScreenStyles.js
 import { StyleSheet } from 'react-native';
 
 const createStyles = (boxSize) =>
   StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
+    scrollContainer: {
+      alignItems: 'center',
+      paddingBottom: 20,
+    },
     header: {
       width: '100%',
       alignItems: 'center',
-      marginBottom: 10,
+      paddingVertical: 15,
+      backgroundColor: '#f3f3f3',
     },
     logo: {
-      width: 200, // Adjust size as needed
+      width: 200,
       height: 50,
-    },
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    scrollContainer: {
-      paddingVertical: 10,
-      alignItems: 'center',
     },
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      justifyContent: 'space-around',
+      justifyContent: 'center',
       width: '100%',
     },
     box: {
-      width: boxSize,
-      height: boxSize,
+      width: boxSize - 10,
+      height: boxSize - 10,
       margin: 5,
       backgroundColor: '#00A9FF',
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: 5,
-      position: 'relative',
-    },
-    boxText: {
-      color: '#FFFFFF',
-      fontWeight: 'bold',
-      position: 'absolute',
-      bottom: 5,
-      left: 5,
+      borderRadius: 10,
+      overflow: 'hidden',
     },
     image: {
       width: '100%',
       height: '100%',
-      borderRadius: 5,
+      position: 'absolute',
+      top: 0,
+      left: 0,
     },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+    boxText: {
+      fontSize: 13,
+      color: '#fff',
+      fontWeight: 'bold',
+      position: 'absolute',
+      bottom: 5,
+      left: 5,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
     },
   });
 

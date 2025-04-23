@@ -5,30 +5,27 @@
     "version": "1.0.0",
     "scheme": "Museum",
     "orientation": "portrait",
-    "icon": "./assets/Images/KnowitBlack.png",
+    "icon": "./assets/ASSAlogo.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.felkish.Museum"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-av"
     ],
     "extra": {
       "eas": {
-        "projectId": "2ba8a342-dfc3-4323-9660-0ab2ab09eeb5"
+        "projectId": "32941974-7624-4e54-b389-44365c66541e"
       }
     },
-    "android": {
-      "package": "com.felkish.Museum"
-    }
+    "owner": "mikrish99"
   }
 }

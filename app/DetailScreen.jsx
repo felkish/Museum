@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import { useFocusEffect } from '@react-navigation/native';
@@ -38,27 +38,26 @@ const DetailsScreen = ({ route }) => {
   useEffect(() => {
     const loadSound = async () => {
       const { sound } = await Audio.Sound.createAsync(
-        soundMap[audioIndex + 1] // ✅ Use soundMap here
+        soundMap[audioIndex + 1],
+        { shouldPlay: true }
       );
       setSound(sound);
 
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.isLoaded) {
-          const { positionMillis, durationMillis } = status;
+          const { positionMillis, durationMillis, isPlaying } = status;
           setPosition(positionMillis);
           setDuration(durationMillis);
           setSliderValue(positionMillis / durationMillis || 0);
+          setIsPlaying(isPlaying);
 
           if (positionMillis >= durationMillis && durationMillis > 0) {
-            setPosition(0);
-            setSliderValue(0);
-            setIsPlaying(false);
             setIsFinished(true);
+            setIsPlaying(false);
+            setSliderValue(0);
           }
         }
       });
-
-      await sound.playAsync();
     };
 
     loadSound();
@@ -71,7 +70,7 @@ const DetailsScreen = ({ route }) => {
   }, [audioIndex]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       return () => {
         if (sound) {
           sound.stopAsync().then(() => sound.unloadAsync());
@@ -85,13 +84,22 @@ const DetailsScreen = ({ route }) => {
 
     if (isPlaying) {
       await sound.pauseAsync();
-      setIsPlaying(false);
     } else {
       if (isFinished) {
         await sound.setPositionAsync(0);
-        setSliderValue(0);
         setIsFinished(false);
       }
+      await sound.playAsync();
+    }
+
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleSliderChange = async (value) => {
+    if (!sound || duration === 0) return;
+    const newPos = value * duration;
+    await sound.setPositionAsync(newPos);
+    if (!isPlaying) {
       await sound.playAsync();
       setIsPlaying(true);
     }
@@ -99,31 +107,25 @@ const DetailsScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.logo} resizeMode="contain" />
+      <Image source={logo} style={styles.logo} />
 
       <Text style={styles.title}>{title}</Text>
-      <Image source={image} style={styles.image} resizeMode="contain" />
+
+      <Image source={image} style={styles.image} />
 
       <Slider
         style={styles.slider}
         minimumValue={0}
         maximumValue={1}
         value={sliderValue}
-        onSlidingComplete={async (value) => {
-          const seekPosition = value * duration;
-          await sound.setPositionAsync(seekPosition);
-          if (!isPlaying) {
-            await sound.playAsync();
-            setIsPlaying(true);
-          }
-        }}
+        onSlidingComplete={handleSliderChange}
         minimumTrackTintColor="#0d6efd"
-        maximumTrackTintColor="#ddd"
+        maximumTrackTintColor="#dee2e6"
         thumbTintColor="#0d6efd"
       />
 
       <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
-        <FontAwesome name={isPlaying ? 'pause' : 'play'} size={24} color="#fff" />
+        <FontAwesome name={isPlaying ? 'pause' : 'play'} size={36} color="#fff" />
       </TouchableOpacity>
     </View>
   );
